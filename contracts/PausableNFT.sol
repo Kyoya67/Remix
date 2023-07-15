@@ -4,13 +4,14 @@ pragma solidity ^0.8.14;
 import "@openzeppelin/contracts@4.6.0/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts@4.6.0/access/Ownable.sol";
 import "@openzeppelin/contracts@4.6.0/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts@4.6.0/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts@4.6.0/utils/Counters.sol";
 import "@openzeppelin/contracts@4.6.0/utils/Strings.sol";
 
 
 
 
-contract CounterNFT is ERC721URIStorage, Ownable {
+contract PausableNFT is ERC721URIStorage, Ownable {
 
     /**
      *@dev
@@ -25,7 +26,7 @@ contract CounterNFT is ERC721URIStorage, Ownable {
     */
     event TokenURIChanged(address indexed sender, uint256 indexed tokenId, string uri);
 
-    constructor() ERC721("CounterNFT", "COUNT") {}
+    constructor() ERC721("PausableNFT", "PAUSE") {}
 
     /**
      *@dev
