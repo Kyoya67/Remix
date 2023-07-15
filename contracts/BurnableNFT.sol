@@ -10,8 +10,7 @@ import "@openzeppelin/contracts@4.6.0/utils/Strings.sol";
 
 
 
-
-contract BurnableNFT is ERC721URIStorage, Ownable {
+contract BurnableNFT is ERC721Burnable, ERC721URIStorage, Ownable {
 
     /**
      *@dev
@@ -54,6 +53,22 @@ contract BurnableNFT is ERC721URIStorage, Ownable {
     */
     function _baseURI() internal pure override returns (string memory) {
         return "ipfs://bafybeigyod7ldrnytkzrw45gw2tjksdct6qaxnsc7jdihegpnk2kskpt7a/metadata";
+    }
+
+    /**
+     * @dev
+     * - オーバーライド
+    */
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+       return super.tokenURI(tokenId);
+    }
+
+    /**
+     * @dev
+     * - オーバーライド
+    */
+    function _burn(uint256  tokenId) internal override(ERC721, ERC721URIStorage) {
+       super._burn(tokenId);
     }
     
 }
