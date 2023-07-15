@@ -11,7 +11,7 @@ import "@openzeppelin/contracts@4.6.0/utils/Strings.sol";
 
 
 
-contract PausableNFT is ERC721URIStorage, Ownable {
+contract PausableNFT is ERC721Pausable, ERC721URIStorage, Ownable {
 
     /**
      *@dev
@@ -36,7 +36,7 @@ contract PausableNFT is ERC721URIStorage, Ownable {
      * - mintの際にURIを設定
      * - EVENT発火 emit TokenURIChanged
     */
-    function nftMint() public onlyOwner{
+    function nftMint() public onlyOwner whenNotPaused(){
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
 
@@ -55,7 +55,48 @@ contract PausableNFT is ERC721URIStorage, Ownable {
     function _baseURI() internal pure override returns (string memory) {
         return "ipfs://bafybeigyod7ldrnytkzrw45gw2tjksdct6qaxnsc7jdihegpnk2kskpt7a/metadata";
     }
+
+    /**
+     * @dev
+     * - オーバーライド
+    */
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Pausable) {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+
+    /**
+     * @dev
+     * - オーバーライド
+    */
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    /**
+     * @dev
+     * - NFT停止
+    */
+    function pause() public onlyOwner{
+        _pause();
+    }
+
+    /**
+     * @dev
+     * - NFT停止の解除
+    */
+    function unpause() public onlyOwner{
+        _unpause();
+    }
     
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
 }
 
 

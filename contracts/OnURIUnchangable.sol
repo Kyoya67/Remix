@@ -6,10 +6,10 @@ import "@openzeppelin/contracts@4.6.0/access/Ownable.sol";
 import "@openzeppelin/contracts@4.6.0/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts@4.6.0/utils/Counters.sol";
 import "@openzeppelin/contracts@4.6.0/utils/Strings.sol";
-import "@openzeppelin/contracts@4.6.0/utils/Base64.sol";
 
 
-contract OnURIUnchangable is ERC721URIStorage, Ownable {
+
+contract CounterNFT is ERC721URIStorage, Ownable {
 
     /**
      *@dev
@@ -24,7 +24,7 @@ contract OnURIUnchangable is ERC721URIStorage, Ownable {
     */
     event TokenURIChanged(address indexed sender, uint256 indexed tokenId, string uri);
 
-    constructor() ERC721("OnURIUnchangable", "ONU") {}
+    constructor() ERC721("CounterNFT", "COUNT") {}
 
     /**
      *@dev
@@ -38,33 +38,22 @@ contract OnURIUnchangable is ERC721URIStorage, Ownable {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
 
-        string memory imageData = '\
-            <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 350 350">\
-                <polygon points="50 175, 175 50, 300 175, 175 300" stroke="green" fill="yellow" />\
-            </svg>\
-        ';
-
-        bytes memory metaData = abi.encodePacked(
-            '{"name": "',
-            'MyOnChainNFT # ',
-            Strings.toString(newTokenId),
-            '",',
-            '"description": "My second on-Chain NFTs.",',
-            '"image": "data:image/svg+xml;base64,',
-            Base64.encode(bytes(imageData)),
-            '"}'
-        );
-
-        string memory uri = string(abi.encodePacked("data:application/json;base64,",Base64.encode(metaData)));
-
         _mint(_msgSender(), newTokenId);
 
-        _setTokenURI(newTokenId, uri);
-
-        emit TokenURIChanged(_msgSender(), newTokenId, uri);
+        string memory jsonFile = string(abi.encodePacked(Strings.toString(newTokenId), '.json'));
+        _setTokenURI(newTokenId, jsonFile);
+        emit TokenURIChanged(_msgSender(), newTokenId, jsonFile);
     }
 
 
+    /**
+     * @dev
+     * - URLプレフィックスの設定
+    */
+    function _baseURI() internal pure override returns (string memory) {
+        return "ipfs://bafybeigyod7ldrnytkzrw45gw2tjksdct6qaxnsc7jdihegpnk2kskpt7a/metadata";
+    }
+    
 }
 
 
