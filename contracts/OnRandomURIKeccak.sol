@@ -68,9 +68,10 @@ contract OnRandomURIKeccak is ERC721URIStorage, Ownable {
         uint256 newTokenId = _tokenIds.current();
 
         bytes32 hashed = keccak256(abi.encodePacked(newTokenId, block.timestamp));
-        Color memory color = colors[uint256(hashed)%colors.length];
+        Color memory color1 = colors[uint256(hashed)%colors.length];
+        Color memory color2 = colors[uint256(hashed)%(colors.length+1)];
 
-        string memory imageData = _getImage(color.code);
+        string memory imageData = _getImage(color1.code, color2.code);
 
         bytes memory metaData = abi.encodePacked(
             '{"name":"',
@@ -96,15 +97,15 @@ contract OnRandomURIKeccak is ERC721URIStorage, Ownable {
     * - 引数で渡されるカラーコードを指定したSVGデータを返す
     */
 
-    function _getImage(string memory colorCode) internal pure returns (string memory) {
+    function _getImage(string memory colorCode1, string memory colorCode2) internal pure returns (string memory) {
         return (
             string(
                 abi.encodePacked(
                     '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background-color: ',
-                    colorCode,
+                    colorCode1,
                     '">',
                     '<circle cx="100" cy="100" r="90" fill="',
-                    colorCode,
+                    colorCode2,
                     '" stroke="black" stroke-width="2" />',
                     '<circle cx="70" cy="80" r="15" fill="black" />',
                     '<circle cx="130" cy="80" r="15" fill="black" />',
