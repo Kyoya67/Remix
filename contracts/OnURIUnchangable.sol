@@ -6,10 +6,11 @@ import "@openzeppelin/contracts@4.6.0/access/Ownable.sol";
 import "@openzeppelin/contracts@4.6.0/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts@4.6.0/utils/Counters.sol";
 import "@openzeppelin/contracts@4.6.0/utils/Strings.sol";
+import "@openzeppelin/contracts@4.6.0/utils/Base64.sol";
 
 
 
-contract CounterNFT is ERC721URIStorage, Ownable {
+contract OnURIUnchangable is ERC721URIStorage, Ownable {
 
     /**
      *@dev
@@ -24,7 +25,7 @@ contract CounterNFT is ERC721URIStorage, Ownable {
     */
     event TokenURIChanged(address indexed sender, uint256 indexed tokenId, string uri);
 
-    constructor() ERC721("CounterNFT", "COUNT") {}
+    constructor() ERC721("OnURIUnchangable", "ONU") {}
 
     /**
      *@dev
@@ -38,21 +39,35 @@ contract CounterNFT is ERC721URIStorage, Ownable {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
 
+        string memory imageData = '\
+            <svg viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg">\
+                <circle cx="100" cy="100" r="90" fill="yellow" stroke="black" stroke-width="2" />\
+                <circle cx="80" cy="80" r="15" fill="black" />\
+                <circle cx="120" cy="80" r="15" fill="black" />\
+                <path d="M80 130 Q100 150 120 130" fill="none" stroke="black" stroke-width="3" />\
+            </svg>\
+        ';
+
+
+        bytes memory metaData = abi.encodePacked(
+            '{"name":"',
+            'SmileOnchainNFT #',
+            Strings.toString(newTokenId),
+            '","description":"My full on chain NFT",',
+            '"image": "data:image/svg+xml;base64,',
+            Base64.encode(bytes(imageData)),
+            '"}'
+        );
+
+        string memory uri = string(abi.encodePacked("data:application/json;base64,",Base64.encode(metaData)));
+
         _mint(_msgSender(), newTokenId);
 
-        string memory jsonFile = string(abi.encodePacked(Strings.toString(newTokenId), '.json'));
-        _setTokenURI(newTokenId, jsonFile);
-        emit TokenURIChanged(_msgSender(), newTokenId, jsonFile);
+        _setTokenURI(newTokenId, uri);
+        
+        emit TokenURIChanged(_msgSender(), newTokenId, uri);
     }
 
-
-    /**
-     * @dev
-     * - URLプレフィックスの設定
-    */
-    function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://bafybeigyod7ldrnytkzrw45gw2tjksdct6qaxnsc7jdihegpnk2kskpt7a/metadata";
-    }
     
 }
 
