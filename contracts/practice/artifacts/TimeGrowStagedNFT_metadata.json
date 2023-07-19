@@ -567,7 +567,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/practice/TimeFrowStageNFT.sol": "TimeGrowStagedNFT"
+			"contracts/practice/EventGrowStageNFT.sol": "TimeGrowStagedNFT"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -693,7 +693,7 @@
 				"dweb:/ipfs/Qmct36zWXv3j7LZB83uwbg7TXwnZSN1fqHNDZ93GG98bGz"
 			]
 		},
-		"contracts/practice/TimeFrowStageNFT.sol": {
+		"contracts/practice/EventGrowStageNFT.sol": {
 			"keccak256": "0xb1c1d7c615acb972bbcb0e97c0a99a739e86dc4c664a618d10ca1b9f5076bfe1",
 			"license": "MIT",
 			"urls": [
